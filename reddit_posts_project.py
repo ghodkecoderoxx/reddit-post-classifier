@@ -416,39 +416,3 @@ SYSTEM_PROMPT = """
 You are an assistant that determines whether a post is NSFW 18+ sexually explicit posts based on its title.
 Return the output as JSON matching the schema}.
 """
-
-!pip install -q google-generativeai
-import google.generativeai as genai
-from google import genai
-from google.genai.types import GenerateContentConfig, ThinkingConfig
-
-# Set your API key
-api_key="YOUR_NEW_API_KEY_HERE" # <--- REPLACE THIS WITH YOUR NEW API KEY
-client = genai.Client(api_key=api_key)
-model = client.models.generate_content
-
-def call_model(title_text, config):
-  response = model(model="gemini-2.0-flash", contents=[title_text], config=config)
-  return response.text
-
-def process_title(title_text):
-    config = {
-        "response_mime_type": "application/json",
-        "response_schema": RESPONSE_SCHEMA,
-        "system_instruction": SYSTEM_PROMPT,
-        "thinking_config": {"thinking_budget": 0}  # optional
-    }
-
-    raw_response = call_model(title_text,config)
-    print(raw_response)
-    try:
-        parsed = json.loads(raw_response)  # parse JSON response
-        nsfw_flag = parsed.get("nsfw_flag", "no")  # default to "no" if missing
-    except Exception as e:
-        nsfw_flag = "no"  # fallback if model fails
-    return nsfw_flag
-
-df_sample=df.iloc[:10,:]
-print(df_sample.head())
-df_sample['nsfw_flag'] = df_sample['title'].apply(process_title)
-print(df_sample[['title','nsfw_flag']].head())
