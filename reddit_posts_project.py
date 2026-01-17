@@ -398,21 +398,3 @@ print(f"F1-Score : {f1_rf:.2f}\n")
 # Full classification report for Random Forest
 print("Detailed Classification Report (Random Forest):")
 print(classification_report(y_test, y_pred_rf))
-
-# Example structured schema
-RESPONSE_SCHEMA = {
-    "type": "object",
-    "properties": {
-        "nsfw_flag": {
-            "type": "string",
-            "enum": ["yes", "no"]
-        }
-    },
-    "required": ["nsfw_flag"]
-}
-
-# Optional: System prompt to guide model
-SYSTEM_PROMPT = """
-You are an assistant that determines whether a post is NSFW 18+ sexually explicit posts based on its title.
-Return the output as JSON matching the schema}.
-"""
